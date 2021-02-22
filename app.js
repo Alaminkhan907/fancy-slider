@@ -15,7 +15,8 @@ const KEY = '15674931-a9d714b6e9d654524df198e00&q';
 
 // show images 
 const showImages = (images) => {
-  imagesArea.style.display = 'block';
+  //console.log(images);
+  imagesArea.style.display = 'inline';
   gallery.innerHTML = '';
   // show gallery title
   galleryHeader.style.display = 'flex';
@@ -25,13 +26,13 @@ const showImages = (images) => {
     div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
     gallery.appendChild(div)
   })
-
 }
 
 const getImages = (query) => {
+  //console.log(query);
   fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
-    .then(data => showImages(data.hitS))
+    .then(data => showImages(data.hits))
     .catch(err => console.log(err))
 }
 
@@ -64,10 +65,11 @@ const createSlider = () => {
   `;
 
   sliderContainer.appendChild(prevNext)
-  document.querySelector('.main').style.display = 'block';
+  document.querySelector('.main').style.display = 'inline';
   // hide image aria
   imagesArea.style.display = 'none';
-  const duration = document.getElementById('duration').value || 1000;
+  const durations = document.getElementById('duration').value || 1000;
+  const duration =Math.abs(durations);
   sliders.forEach(slide => {
     let item = document.createElement('div')
     item.className = "slider-item";
@@ -113,10 +115,18 @@ searchBtn.addEventListener('click', function () {
   document.querySelector('.main').style.display = 'none';
   clearInterval(timer);
   const search = document.getElementById('search');
+  //console.log(search.value);
   getImages(search.value)
   sliders.length = 0;
 })
 
 sliderBtn.addEventListener('click', function () {
-  createSlider()
+  createSlider();
 })
+// Enter button search option
+document.getElementById('search')
+    .addEventListener("keypress", function(event) {
+        if (event.key === 'Enter') {
+            document.getElementById("search-btn").click();
+        }
+});
